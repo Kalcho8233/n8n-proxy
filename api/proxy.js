@@ -1,22 +1,26 @@
 export default async function handler(req, res) {
-  const target = req.query.target;
+  const targetUrl = req.query.target;
 
-  if (!target) {
-    return res.status(400).json({ error: "Missing 'target' query parameter" });
+  if (!targetUrl) {
+    return res.status(400).json({ error: 'Missing target URL' });
+  }
+
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
-    const response = await fetch(target, {
-      method: "POST",
+    const response = await fetch(targetUrl, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(req.body),
     });
 
     const data = await response.json();
-    res.status(response.status).json(data);
+    return res.status(response.status).json(data);
   } catch (error) {
-    res.status(500).json({ error: "Proxy request failed", details: error.message });
+    return res.status(500).json({ error: 'Proxy error', details: error.message });
   }
 }
