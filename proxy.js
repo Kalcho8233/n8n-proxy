@@ -1,11 +1,12 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Only POST requests allowed' });
+  const targetUrl = req.query.target;
+
+  if (!targetUrl) {
+    return res.status(400).json({ error: 'Missing target URL' });
   }
 
-  const targetUrl = req.query.target;
-  if (!targetUrl) {
-    return res.status(400).json({ error: 'Missing target URL in query parameter' });
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
